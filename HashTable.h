@@ -9,7 +9,7 @@
  * an unsigned long (which is the hash value)
  *
  * For example, you might do:
- * unsigned long hash(char c){ return 10*((unsigned long)c)%13; }
+ * unsigned long hash(char c){ return 10*((unsigned long)c)%backingArraySize; }
  * HashTable<char,int> mySillyTable;
  *
  * If you don't define an appropriate hash function, the class won't compile.
