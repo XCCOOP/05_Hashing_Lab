@@ -83,7 +83,7 @@ private:
 
 template <class Key, class T>
 HashTable<Key,T>::HashTable(){
-  //TODO
+  numItems = 0;
 }
 
 template <class Key, class T>
@@ -122,8 +122,7 @@ bool HashTable<Key,T>::keyExists(Key k){
 
 template <class Key, class T>
 unsigned long HashTable<Key,T>::size(){
-  //TODO
-  return 0;
+  return numItems;
 }
 
 template <class Key, class T>
