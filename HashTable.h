@@ -97,13 +97,24 @@ HashTable<Key,T>::~HashTable() {
 template <class Key, class T>
 unsigned long HashTable<Key,T>::calcIndex(Key k){
 	int startPoint = hash(k)%backingArraySize;
+	int newStart = startPoint;
 
+	if(k == backingArray[startPoint].k) {
+		return startPoint;
+	}
 
-	//while(backingArray[startPoint].isNull == false && backingArray[startPoint].isDel == false) {
-	//	startPoint++%backingArraySize;
-	//}
-	
-	return startPoint;
+	while(k != backingArray[newStart].k && backingArray[newStart].isNull == false) {
+		newStart = (newStart++ % backingArraySize);
+	}
+
+	if(numRemoved == 0) {
+		return newStart;
+	} else {
+		while(backingArray[startPoint].isDel == false) {
+			startPoint = (startPoint++ % backingArraySize);
+		}
+		return startPoint;
+	}
 }
 
 template <class Key, class T>
@@ -112,6 +123,7 @@ void HashTable<Key,T>::add(Key k, T x){
 	if(numItems + numRemoved >= backingArraySize/2) {
 		grow();
 	}
+	backingArray[calcIndex(k)].k = k;
 	backingArray[calcIndex(k)].x = x;
 	backingArray[calcIndex(k)].isNull = false;
 }
@@ -121,27 +133,25 @@ void HashTable<Key,T>::remove(Key k){
 	numItems--;
 	numRemoved++;
 	//TODO
-	//Set isDel to true
+	backingArray[calcIndex(k)].isDel = true;
 }
 
 template <class Key, class T>
 T HashTable<Key,T>::find(Key k){
-  T dummy;
-  return dummy;
-}
-
-template <class Key, class T>
-bool HashTable<Key,T>::keyExists(Key k){
-	if( k == calcIndex(k)) {
-		return true;
+	if(keyExists(k)) {
+		return calcIndex(k);
 	} else {
-		return false;
+		throw std::string("Key does not exist");
 	}
 }
 
 template <class Key, class T>
+bool HashTable<Key,T>::keyExists(Key k){
+	return (k == backingArray[calcIndex(k)].k && backingArray[calcIndex(k)].isDel == false);
+}
+
+template <class Key, class T>
 unsigned long HashTable<Key,T>::size(){
-  //TODO
   return numItems;
 }
 
