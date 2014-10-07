@@ -83,7 +83,10 @@ private:
 
 template <class Key, class T>
 HashTable<Key,T>::HashTable(){
-  numItems = 0;
+	backingArraySize = hashPrimes[0];
+	backingArray = new HashRecord[backingArraySize];
+	numItems = 0;
+	numRemoved = 0;
 }
 
 template <class Key, class T>
@@ -93,40 +96,58 @@ HashTable<Key,T>::~HashTable() {
 
 template <class Key, class T>
 unsigned long HashTable<Key,T>::calcIndex(Key k){
-  //TODO
-  return numItems; //This indicates failure, since it is an impossible value
+	int startPoint = hash(k)%backingArraySize;
+
+
+	//while(backingArray[startPoint].isNull == false && backingArray[startPoint].isDel == false) {
+	//	startPoint++%backingArraySize;
+	//}
+	
+	return startPoint;
 }
 
 template <class Key, class T>
 void HashTable<Key,T>::add(Key k, T x){
-  //TODO
+	numItems++;
+	if(numItems + numRemoved >= backingArraySize/2) {
+		grow();
+	}
+	backingArray[calcIndex(k)].x = x;
+	backingArray[calcIndex(k)].isNull = false;
 }
 
 template <class Key, class T>
 void HashTable<Key,T>::remove(Key k){
-  //TODO
+	numItems--;
+	numRemoved++;
+	//TODO
+	//Set isDel to true
 }
 
 template <class Key, class T>
 T HashTable<Key,T>::find(Key k){
-  //TODO
   T dummy;
   return dummy;
 }
 
 template <class Key, class T>
 bool HashTable<Key,T>::keyExists(Key k){
-  //TODO
-  return false;
+	if( k == calcIndex(k)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 template <class Key, class T>
 unsigned long HashTable<Key,T>::size(){
+  //TODO
   return numItems;
 }
 
 template <class Key, class T>
 void HashTable<Key,T>::grow(){
-  //TODO
+  numItems = 0;
+  numRemoved = 0;
 }
 
