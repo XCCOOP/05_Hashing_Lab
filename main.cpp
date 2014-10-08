@@ -122,7 +122,7 @@ void testBasicMethods(){
 
   if(testHash.keyExists("brown") && testHash.keyExists("cow") &&
        testHash.keyExists("metal") && testHash.keyExists("daffodil")){
-    std::cout << "SUCCESS: The 4 items that weren't removed are still in the table." << std::endl;
+   std::cout << "SUCCESS: The 4 items that weren't removed are still in the table." << std::endl;
   } else {
     std::cout << "ERROR: One of the 4 keys that ought to still be in the table has been lost" << std::endl;
     return;

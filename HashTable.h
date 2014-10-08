@@ -81,6 +81,12 @@ private:
 // remove
 #include <string>
 
+
+//Author: Nick Cooperrider
+//Date: 10/7/2014
+//All method implementations from here down are all mine with help from in class and the online book.
+
+
 template <class Key, class T>
 HashTable<Key,T>::HashTable(){
 	backingArraySize = hashPrimes[0];
@@ -91,7 +97,7 @@ HashTable<Key,T>::HashTable(){
 
 template <class Key, class T>
 HashTable<Key,T>::~HashTable() {
-  //TODO
+  delete[] backingArray;
 }
 
 template <class Key, class T>
@@ -119,30 +125,38 @@ unsigned long HashTable<Key,T>::calcIndex(Key k){
 
 template <class Key, class T>
 void HashTable<Key,T>::add(Key k, T x){
-	numItems++;
-	if(numItems + numRemoved >= backingArraySize/2) {
-		grow();
+	if(keyExists(k) == false) {
+		numItems++;
+		if(numItems + numRemoved >= backingArraySize/2) {
+			grow();
+		}
+		int i = calcIndex(k);
+		backingArray[i].k = k;
+		backingArray[i].x = x;
+		backingArray[i].isNull = false;
+		backingArray[i].isDel = false;
+
 	}
-	backingArray[calcIndex(k)].k = k;
-	backingArray[calcIndex(k)].x = x;
-	backingArray[calcIndex(k)].isNull = false;
 }
 
 template <class Key, class T>
 void HashTable<Key,T>::remove(Key k){
 	numItems--;
 	numRemoved++;
-	//TODO
 	backingArray[calcIndex(k)].isDel = true;
 }
 
 template <class Key, class T>
 T HashTable<Key,T>::find(Key k){
-	if(keyExists(k)) {
-		return calcIndex(k);
-	} else {
-		throw std::string("Key does not exist");
+	
+	int i = calcIndex(k);
+	while(backingArray[i].isNull == false) {
+		if(backingArray[i].isDel == false && backingArray[i].k == k) {
+			return backingArray[i].x;
+		}
+		i = (i == backingArraySize-1) ? 0 : i + 1;
 	}
+	throw std::string("Key does not exist");
 }
 
 template <class Key, class T>
@@ -159,5 +173,35 @@ template <class Key, class T>
 void HashTable<Key,T>::grow(){
   numItems = 0;
   numRemoved = 0;
+
+  
+  unsigned long tempArraySize = backingArraySize;
+  unsigned long i = 0;
+  while(hashPrimes[i] <= tempArraySize) {
+	  i++;
+  }
+  tempArraySize = hashPrimes[i];
+  HashRecord* oldBackingArray = new HashRecord[backingArraySize];
+  unsigned long oldBackingArraySize = backingArraySize;
+
+  for(unsigned int i = 0; i<oldBackingArraySize; i++){
+		oldBackingArray[i] = backingArray[i];
+	}
+
+  delete[] backingArray;
+
+  HashRecord* tempArray = new HashRecord[tempArraySize];
+
+  backingArray = tempArray;
+  backingArraySize = tempArraySize;
+
+  for(unsigned int i = 0; i < backingArraySize; i++) {
+	  if(oldBackingArray[i].isNull == false && oldBackingArray[i].isDel == false) {
+		  add(oldBackingArray[i].k,oldBackingArray[i].x);
+	  }
+  }
+
+  delete[] oldBackingArray;
+  delete[] tempArray;
 }
 
