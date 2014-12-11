@@ -125,7 +125,7 @@ unsigned long HashTable<Key,T>::calcIndex(Key k){
 
 template <class Key, class T>
 void HashTable<Key,T>::add(Key k, T x){
-	if(keyExists(k) == false) {
+	if(!keyExists(k)) {
 		numItems++;
 		if(numItems + numRemoved >= backingArraySize/2) {
 			grow();
@@ -141,9 +141,12 @@ void HashTable<Key,T>::add(Key k, T x){
 
 template <class Key, class T>
 void HashTable<Key,T>::remove(Key k){
-	numItems--;
-	numRemoved++;
-	backingArray[calcIndex(k)].isDel = true;
+
+	if(keyExists(k)) {
+		numItems--;
+		numRemoved++;
+		backingArray[calcIndex(k)].isDel = true;
+	}
 }
 
 template <class Key, class T>
