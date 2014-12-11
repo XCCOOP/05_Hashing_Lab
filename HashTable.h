@@ -109,7 +109,7 @@ unsigned long HashTable<Key,T>::calcIndex(Key k){
 		return startPoint;
 	}
 
-	while(k != backingArray[newStart].k && backingArray[newStart].isNull == false) {
+	while(k != backingArray[newStart].k && backingArray[newStart].isNull == false && !backingArray[newStart].isDel) {
 		newStart = (newStart++ % backingArraySize);
 	}
 
